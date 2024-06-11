@@ -1,0 +1,24 @@
+name: D
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: korandoru/setup-zig@v1
+        with:
+          zig-version: master
+      - uses: dlang-community/setup-dlang@v2
+        with:
+          compiler: ldc-master
+
+      # - name: (Dub) Build
+      #   run: dub build
+      - name: (Zig) Build
+        run: zig build run-fib32 --summary new
