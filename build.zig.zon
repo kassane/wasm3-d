@@ -1,5 +1,5 @@
 .{
-    .name = "wasm3-ldc",
+    .name = "wasm3-d",
     .version = "0.0.1",
     .dependencies = .{
         .abs = .{
@@ -7,8 +7,8 @@
             .hash = "1220c7e6dc78a53c0504f93a4c9e885b8293873b799b7c755793f7d46a5309d5b6ed",
         },
         .wasm3 = .{
-            .url = "git+https://github.com/kassane/wasm3#zig-v0.13.0",
-            .hash = "1220a3c0e52d77b66bb6408e3b53bf49407b8e5a850e5f3a2a502a379e6ffbebbb18",
+            .url = "git+https://github.com/kassane/wasm3#fd2117454ba389bcecb379d7797937e971011723",
+            .hash = "1220e6bc6861a642b8d3163ebc5350c42552910f690b93eb306bea080416b6cef6b4",
         },
     },
     .paths = .{

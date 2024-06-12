@@ -1,10 +1,11 @@
-module examples.fib32;
+module fib32;
 
+import std.file : exists;
+import std.stdio : writeln, printf, File;
+import std.algorithm : endsWith;
 import wasm3;
-import std.file;
-import std.stdio;
 
-struct Wasm3D
+struct Wasm3
 {
     @disable this();
     this(uint stackByteSize)
@@ -109,19 +110,19 @@ struct Wasm3D
     ubyte[] wasmBytes = void;
 }
 
-void main()
+void main(string[] args)
 {
 
-    Wasm3D wasm3d = Wasm3D(1024);
-    if (exists("fib32.wasm"))
+    Wasm3 Wasm3 = Wasm3(1024);
+    if (args.length > 1 && args[1].endsWith(".wasm"))
     {
-        wasm3d.loadFile("fib32.wasm");
+        Wasm3.loadFile(args[1]);
     }
     else
     {
-        wasm3d.loadContent(fib32_wasm.ptr, fib32_wasm.length);
+        Wasm3.loadContent(fib32_wasm.ptr, fib32_wasm.length);
     }
-    wasm3d.run();
+    Wasm3.run();
 }
 
 ubyte[62] fib32_wasm = [
