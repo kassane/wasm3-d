@@ -1,9 +1,0 @@
-{
-	"authors": [
-		"Matheus Catarino França"
-	],
-	"copyright": "Copyright © 2024, Matheus Catarino França",
-	"description": "D binding for wasm3.",
-	"license": "MIT",
-	"name": "wasm3-d"
-}

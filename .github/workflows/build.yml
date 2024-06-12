@@ -18,7 +18,7 @@ jobs:
         with:
           compiler: ldc-master
 
-      # - name: (Dub) Build
-      #   run: dub build
+      - name: (Dub) Build
+        run: dub build -b release :fib32
       - name: (Zig) Build
-        run: zig build run-fib32 --summary new
+        run: zig build run-fib32 --summary all

@@ -1,14 +1,14 @@
 .{
-    .name = "wasm3-ldc",
-    .version = "0.0.1",
+    .name = "wasm3-d",
+    .version = "0.1.0",
     .dependencies = .{
         .abs = .{
-            .url = "git+https://github.com/kassane/anotherBuildStep#4cb71185673f600091b92aa082db33f7f6b0d38c",
-            .hash = "1220c7e6dc78a53c0504f93a4c9e885b8293873b799b7c755793f7d46a5309d5b6ed",
+            .url = "git+https://github.com/kassane/anotherBuildStep#8a17b838646c289ff1dda2823192bbf558417b87",
+            .hash = "1220d1cca874f2c665b2d5b2f99612e8d71c486f60785b065e24fd667701e1fe6f30",
         },
         .wasm3 = .{
-            .url = "git+https://github.com/kassane/wasm3#zig-v0.13.0",
-            .hash = "1220a3c0e52d77b66bb6408e3b53bf49407b8e5a850e5f3a2a502a379e6ffbebbb18",
+            .url = "git+https://github.com/wasm3/wasm3#35b5e2fb53c5cbc1ff3d7e42c381cd7cfa14f308",
+            .hash = "12209097284f2f404aa544500c6abbb08c4763d877255ca7e460200c43f9ebcfbff9",
         },
     },
     .paths = .{
@@ -17,5 +17,7 @@
         "README.md",
         "build.zig",
         "build.zig.zon",
+        "LICENSE",
+        "examples",
     },
 }

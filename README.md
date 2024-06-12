@@ -1,4 +1,4 @@
-# wasm3-d [WiP]
+# wasm3-d
 
 D bindings for Wasm3, the fastest WebAssembly interpreter
 

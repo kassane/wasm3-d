@@ -1,0 +1,38 @@
+name "wasm3-d"
+version "0.1.0"
+description "D binding for Wasm3"
+authors "Matheus Catarino França"
+license "MIT"
+sourcePaths "source"
+targetType "sourceLibrary"
+
+buildType "debug" {
+    buildOptions "debugMode" "debugInfo"
+}
+
+buildType "unittest" {
+    buildOptions "debugMode" "debugInfo" "unittests"
+}
+
+buildType "release" {
+    buildOptions "releaseMode" "inline" "optimize"
+}
+
+buildType "release-nobounds" {
+    buildOptions "releaseMode" "inline" "noBoundsCheck" "optimize"
+}
+
+buildType "release-debug" {
+    buildOptions "releaseMode" "debugInfo" "inline" "optimize"
+}
+
+subPackage {
+    name "fib32"
+    targetType "executable"
+    targetPath "build"
+    sourceFiles "examples/fib32.d"
+    libs "m3"
+    lflags "-Lzig-out/lib" platform="posix"
+    lflags "/LIBPATH:zig-out/lib" platform="windows"
+    preBuildCommands "zig build -Dartifact"
+}
