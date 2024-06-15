@@ -5,19 +5,19 @@ import std.stdio : writeln, printf, File;
 import std.algorithm : endsWith;
 import wasm3;
 
-struct Wasm3
+struct Fib
 {
     @disable this();
     this(uint stackByteSize)
     {
-        env = m3_NewEnvironment();
+        env = Environment(null);
         if (env is null)
         {
             writeln("Failed to create environment\n");
             return;
         }
-        runtime = m3_NewRuntime(env, stackByteSize, null);
-        if (runtime is null)
+        rt = env.newRuntime(stackByteSize);
+        if (rt.runtime is null)
         {
             writeln("Failed to init runtime\n");
             return;
@@ -45,21 +45,23 @@ struct Wasm3
         }
         writeln("Wasm file size: ", wasmBytes.length);
         f.close();
-        result = m3_ParseModule(env, &mod, wasmBytes.ptr, cast(uint) wasmBytes.length);
+        mod = env.parseModule(wasmBytes, wasmBytes.length);
+        result = env.result;
         if (result !is null)
         {
-            writeln("m3_ParseModule: ");
+            writeln("env.parseModule: ");
             printf("%s\n", result);
             return;
         }
     }
 
-    void loadContent(const(ubyte)* content, uint len)
+    void loadContent(ubyte[] content, uint len)
     {
-        result = m3_ParseModule(env, &mod, content, len);
+        mod = env.parseModule(content, len);
+        result = env.result;
         if (result !is null)
         {
-            writeln("m3_ParseModule: ");
+            writeln("env.parseModule: ");
             printf("%s\n", result);
             return;
         }
@@ -67,7 +69,7 @@ struct Wasm3
 
     void run()
     {
-        result = m3_LoadModule(runtime, mod);
+        result = m3_LoadModule(rt.runtime, mod.m_module);
         if (result !is null)
         {
             writeln("m3_LoadModule: ");
@@ -75,7 +77,7 @@ struct Wasm3
             return;
         }
 
-        result = m3_FindFunction(&func, runtime, "fib");
+        result = m3_FindFunction(&func, rt.runtime, "fib");
         if (result !is null)
         {
             writeln("m3_FindFunction: ");
@@ -91,20 +93,14 @@ struct Wasm3
             return;
         }
 
-        int* value = cast(int*)(runtime.stack);
+        int* value = cast(int*)(rt.runtime.stack);
         printf("Result: %d\n", *value);
     }
 
-    ~this()
-    {
-        m3_FreeRuntime(runtime);
-        m3_FreeEnvironment(env);
-    }
-
-    M3Environment* env = null;
-    M3Runtime* runtime = null;
     IM3Function func;
-    IM3Module mod;
+    Environment env;
+    Runtime rt;
+    Module mod;
     const(char)* result = void;
     ubyte[] buffer;
     ubyte[] wasmBytes = void;
@@ -113,16 +109,16 @@ struct Wasm3
 void main(string[] args)
 {
 
-    Wasm3 Wasm3 = Wasm3(1024);
+    Fib f = Fib(1024);
     if (args.length > 1 && args[1].endsWith(".wasm"))
     {
-        Wasm3.loadFile(args[1]);
+        f.loadFile(args[1]);
     }
     else
     {
-        Wasm3.loadContent(fib32_wasm.ptr, fib32_wasm.length);
+        f.loadContent(fib32_wasm, fib32_wasm.length);
     }
-    Wasm3.run();
+    f.run();
 }
 
 ubyte[62] fib32_wasm = [
