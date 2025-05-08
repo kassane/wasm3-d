@@ -1,38 +1,41 @@
 name "wasm3-d"
-version "0.1.0"
+version "0.3.0"
 description "D binding for Wasm3"
 authors "Matheus Catarino França"
 license "MIT"
-sourcePaths "source"
-targetType "sourceLibrary"
-
 buildType "debug" {
-    buildOptions "debugMode" "debugInfo"
+	buildOptions "debugMode" "debugInfo"
 }
-
 buildType "unittest" {
-    buildOptions "debugMode" "debugInfo" "unittests"
+	buildOptions "debugMode" "debugInfo" "unittests"
 }
-
 buildType "release" {
-    buildOptions "releaseMode" "inline" "optimize"
+	buildOptions "releaseMode" "inline" "optimize"
 }
-
 buildType "release-nobounds" {
-    buildOptions "releaseMode" "inline" "noBoundsCheck" "optimize"
+	buildOptions "releaseMode" "inline" "noBoundsCheck" "optimize"
 }
-
 buildType "release-debug" {
-    buildOptions "releaseMode" "debugInfo" "inline" "optimize"
+	buildOptions "releaseMode" "debugInfo" "inline" "optimize"
 }
-
+toolchainRequirements frontend=">=2.111.0"
+targetPath "build"
+targetName "wasm3d"
+dflags "-P-I$PACKAGE_DIR/wasm3-main/source"
+dflags "-verrors=context" platform="dmd"
+dflags "--verrors-context" "-mcpu=native" platform="ldc"
+lflags "-L$PACKAGE_DIR/build" platform="posix"
+lflags "/LIBPATH:$PACKAGE_DIR/build" platform="windows"
+libs "m3"
+preBuildCommands "mkdir -p $PACKAGE_DIR/build" "curl -sLO https://github.com/wasm3/wasm3/archive/refs/heads/main.tar.gz" "tar xzf main.tar.gz" "rm main.tar.gz" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_api_libc.o $PACKAGE_DIR/wasm3-main/source/m3_api_libc.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_extensions.o $PACKAGE_DIR/wasm3-main/source/extensions/m3_extensions.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_api_meta_wasi.o $PACKAGE_DIR/wasm3-main/source/m3_api_meta_wasi.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_api_tracer.o $PACKAGE_DIR/wasm3-main/source/m3_api_tracer.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_api_uvwasi.o $PACKAGE_DIR/wasm3-main/source/m3_api_uvwasi.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_api_wasi.o $PACKAGE_DIR/wasm3-main/source/m3_api_wasi.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_bind.o $PACKAGE_DIR/wasm3-main/source/m3_bind.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_code.o $PACKAGE_DIR/wasm3-main/source/m3_code.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_compile.o $PACKAGE_DIR/wasm3-main/source/m3_compile.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_core.o $PACKAGE_DIR/wasm3-main/source/m3_core.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_env.o $PACKAGE_DIR/wasm3-main/source/m3_env.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_exec.o $PACKAGE_DIR/wasm3-main/source/m3_exec.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_function.o $PACKAGE_DIR/wasm3-main/source/m3_function.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_info.o $PACKAGE_DIR/wasm3-main/source/m3_info.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_module.o $PACKAGE_DIR/wasm3-main/source/m3_module.c" "gcc -mtune=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_parse.o $PACKAGE_DIR/wasm3-main/source/m3_parse.c" "ar rcs $PACKAGE_DIR/build/libm3.a $PACKAGE_DIR/build/*.o" "rm $PACKAGE_DIR/build/*.o" platform="linux"
+preBuildCommands "mkdir -p $PACKAGE_DIR/build $PACKAGE_DIR/include" "curl -sLO https://github.com/wasm3/wasm3/archive/refs/heads/main.tar.gz" "tar xzf main.tar.gz" "rm main.tar.gz" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_api_libc.o $PACKAGE_DIR/wasm3-main/source/m3_api_libc.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_extensions.o $PACKAGE_DIR/wasm3-main/source/extensions/m3_extensions.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_api_meta_wasi.o $PACKAGE_DIR/wasm3-main/source/m3_api_meta_wasi.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_api_tracer.o $PACKAGE_DIR/wasm3-main/source/m3_api_tracer.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_api_uvwasi.o $PACKAGE_DIR/wasm3-main/source/m3_api_uvwasi.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_api_wasi.o $PACKAGE_DIR/wasm3-main/source/m3_api_wasi.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_bind.o $PACKAGE_DIR/wasm3-main/source/m3_bind.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_code.o $PACKAGE_DIR/wasm3-main/source/m3_code.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_compile.o $PACKAGE_DIR/wasm3-main/source/m3_compile.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_core.o $PACKAGE_DIR/wasm3-main/source/m3_core.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_env.o $PACKAGE_DIR/wasm3-main/source/m3_env.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_exec.o $PACKAGE_DIR/wasm3-main/source/m3_exec.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_function.o $PACKAGE_DIR/wasm3-main/source/m3_function.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_info.o $PACKAGE_DIR/wasm3-main/source/m3_info.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_module.o $PACKAGE_DIR/wasm3-main/source/m3_module.c" "clang -mcpu=native -std=c99 -O3 -fPIE -Dd_m3HasTracer -I$PACKAGE_DIR/wasm3-main/source -c -o $PACKAGE_DIR/build/m3_parse.o $PACKAGE_DIR/wasm3-main/source/m3_parse.c" "ar rcs $PACKAGE_DIR/build/libm3.a $PACKAGE_DIR/build/*.o" "rm $PACKAGE_DIR/build/*.o" platform="osx"
 subPackage {
-    name "fib32"
-    targetType "executable"
-    targetPath "build"
-    sourceFiles "examples/fib32.d"
-    libs "m3"
-    lflags "-Lzig-out/lib" platform="posix"
-    lflags "/LIBPATH:zig-out/lib" platform="windows"
-    preBuildCommands "zig build -Dartifact"
+	name "fib32"
+	targetType "executable"
+	targetPath "build"
+	targetName "fib32"
+	lflags "-L$PACKAGE_DIR/build" platform="posix"
+	lflags "/LIBPATH:$PACKAGE_DIR/build" platform="windows"
+	libs "m3" "wasm3d"
+	sourceFiles "examples/fib32.d"
 }
