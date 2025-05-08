@@ -29,4 +29,4 @@ jobs:
       - name: (Dub) Build
         run: dub build -v
       - name: Run fib32.wasm
-        run: dub :fib32
+        run: dub :fib32 -- $PWD/examples/fib32.wasm
