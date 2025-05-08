@@ -1,24 +1,32 @@
 name: D
 
-on: [push]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
 
 jobs:
   build:
     strategy:
-      fail-fast: false
       matrix:
-        runs-on: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.runs-on }}
+        include:
+          - os: ubuntu-latest 
+            arch: amd64
+            compiler: ldc-master
+          - os: ubuntu-24.04-arm 
+            arch: arm64
+            compiler: ldc-master
+          - os: macos-latest
+            arch: arm64
+            compiler: ldc-master
+      fail-fast: false
+    runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
-      - uses: korandoru/setup-zig@v1
-        with:
-          zig-version: master
       - uses: dlang-community/setup-dlang@v2
         with:
-          compiler: ldc-master
-
+          compiler: ${{matrix.compiler}}
       - name: (Dub) Build
-        run: dub build -b release :fib32
-      - name: (Zig) Build
-        run: zig build run-fib32 --summary all
+        run: dub build -v
+      - name: Run fib32.wasm
+        run: dub :fib32
